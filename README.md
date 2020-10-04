@@ -20,6 +20,20 @@ The transcription process outputs a JSON file into the S3 bucket. The JSON file 
 * Speaker segments - one or more time based segments by speaker.  
 * Segment items - one or more time based "items" (each a single word) by speaker.
 
+## Editing debate audio
+
+youtube-dl is a command-line program to download videos from YouTube.com
+
+https://youtube-dl.org
+
+The 2020 Presidential Debate #1 audio was retrieved using youtube-dl using following command:
+
+youtube-dl -x --audio-format "mp3" "https://www.youtube.com/watch?v=wW1lY5jFNcQ"
+
+In addition, Libav https://libav.org 'avconv' was used to remove the YouTube audio first 30 minutes or so where debate has not yet started. 
+
+avconv -ss 00:27:45 -t 02:03:00 -i debate_audio.mp3 -vcodec libx264 debate_audio_shorter.mp3
+
 ## Processing debate output JSON
 
 Python used to load JSON file into Pandas dataframe that was used as data source for a Plotly timeline chart.
