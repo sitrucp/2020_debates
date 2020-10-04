@@ -10,6 +10,10 @@ Debate audio was retrieved from this CSPAN <a href="https://www.youtube.com/watc
 
 youtube-dl -x --audio-format "mp3" "https://www.youtube.com/watch?v=wW1lY5jFNcQ"
 
+In addition, Libav https://libav.org 'avconv' was used to remove the YouTube audio first 30 minutes or so where debate has not yet started. 
+
+avconv -ss 00:27:45 -t 02:03:00 -i debate_audio.mp3 -vcodec libx264 debate_audio_shorter.mp3
+
 ## Transcribing debate audio
 
 Amazon Transcribe requires the audio file to be in an S3 bucket. The mp3 file was uploaded to an S3 bucket and Amazon Transcribe used to transcribe it. Both were done using Python and AWS Boto3 SDK.
@@ -19,20 +23,6 @@ The transcription process outputs a JSON file into the S3 bucket. The JSON file 
 * Text transcription - text of audio transcription.
 * Speaker segments - one or more time based segments by speaker.  
 * Segment items - one or more time based "items" (each a single word) by speaker.
-
-## Editing debate audio
-
-youtube-dl is a command-line program to download videos from YouTube.com
-
-https://youtube-dl.org
-
-The 2020 Presidential Debate #1 audio was retrieved using youtube-dl using following command:
-
-youtube-dl -x --audio-format "mp3" "https://www.youtube.com/watch?v=wW1lY5jFNcQ"
-
-In addition, Libav https://libav.org 'avconv' was used to remove the YouTube audio first 30 minutes or so where debate has not yet started. 
-
-avconv -ss 00:27:45 -t 02:03:00 -i debate_audio.mp3 -vcodec libx264 debate_audio_shorter.mp3
 
 ## Processing debate output JSON
 
