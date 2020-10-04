@@ -1,0 +1,9 @@
+
+youtube-dl is a command-line program to download videos from YouTube.com
+
+https://youtube-dl.org
+
+The 2020 Presidential Debate #1 audio was retrieved using youtube-dl using following command:
+
+youtube-dl -x --audio-format "mp3" "https://www.youtube.com/watch?v=wW1lY5jFNcQ"
+
