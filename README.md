@@ -2,6 +2,8 @@
 
 Amazon Transcribe was used to create a transcription of the 2020 Presidential Debate #1 audio. The transcription contains "segments" for each identified speaker in the audio. These segments have start and end times. Amazon Transcribe seems to be pretty good at identifying the speakers in the audio.
 
+![2020_debate_1_timeline](2020_debate_1_timeline.png)
+
 ## Retrieving debate audio
 
 Debate audio was retrieved from this CSPAN <a href="https://www.youtube.com/watch?v=wW1lY5jFNcQ">YouTube video</a> using youtube-dl.
