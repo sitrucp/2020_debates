@@ -13,6 +13,8 @@ audio_file_name=config_details['audio_file_name']
 
 def main():
     chart_timeline()
+    get_df_segment_items()
+    get_df_items()
 
 def load_json():
     fname = 'debate_audio.mp3.json'
@@ -37,29 +39,68 @@ def get_df_segments():
     data = load_json()
 
     for segment in data['results']['speaker_labels']['segments']:
-        segment_dict = {'speaker_label': segment['speaker_label'], 'speaker_num': segment['speaker_label'][-1:],'start_time': segment['start_time'], 'end_time':segment['end_time'], 'end_time_min': float(segment['end_time']) / 60, 'start_date_time': get_datetime(segment['start_time']), 'end_date_time': get_datetime(segment['end_time']) }
+        segment_dict = {'speaker_label': segment['speaker_label'], 'speaker_num': segment['speaker_label'][-1:],'start_time': segment['start_time'], 'end_time':segment['end_time'], 'start_date_time': get_datetime(segment['start_time']), 'end_date_time': get_datetime(segment['end_time']) }
         segment_list.append(segment_dict)
     
     df_segments = pd.DataFrame(segment_list)
     df_segments.replace({'speaker_label': {'spk_0':'Wallace','spk_1': 'Biden','spk_2': 'Trump'}}, regex=False, inplace=True)
 
+    df_segments.to_csv('df_segments.csv', sep=',', encoding='utf-8')
+
     print(df_segments.head(5))
     return df_segments
 
 # each speaker segment has multiple items each with single word with start time and end time
-def get_df_items():
+def get_df_segment_items():
     segment_item_list = []
     data = load_json()
 
     for segment in data['results']['speaker_labels']['segments']:
         for item in segment['items']:
-            segment_item = {'speaker_label': item['speaker_label'], 'speaker_num': item['speaker_label'][-1:],'start_time': item['start_time'], 'end_time':item['end_time'], 'end_time_min': float(item['end_time']) / 60 }
+            segment_item = {'speaker_label': item['speaker_label'], 'speaker_num': item['speaker_label'][-1:],'start_time': item['start_time'], 'end_time':item['end_time']}
             segment_item_list.append(segment_item)
     
-    df_items = pd.DataFrame(segment_item_list)
-    df_items.replace({'speaker_label': {'spk_0':'Wallace','spk_1': 'Biden','spk_2': 'Trump'}}, regex=False, inplace=True)
+    df_segment_items = pd.DataFrame(segment_item_list)
+    df_segment_items.replace({'speaker_label': {'spk_0':'Wallace','spk_1': 'Biden','spk_2': 'Trump'}}, regex=False, inplace=True)
+
+    df_segment_items['speaker_num'] = df_segment_items['speaker_num'].astype(int)
+
+    # get speaker segment start_time
+    df_segment_items['speaker_change_index'] = df_segment_items['speaker_num'].diff()
+    df_segment_items['segment_start_time'] = df_segment_items.loc[df_segment_items['speaker_change_index'] != 0, 'start_time']
+    df_segment_items['segment_start_time'].fillna(method='ffill', inplace=True)
+
+    # get speaker segment end_time
+    df_segment_items['speaker_change_index'] = df_segment_items['speaker_num'].diff(-1)
+    df_segment_items['segment_end_time'] = df_segment_items.loc[df_segment_items['speaker_change_index'] != 0, 'end_time']
+    df_segment_items['segment_end_time'].fillna(method='backfill', inplace=True)
+     
+    df_segment_items.to_csv('df_segment_items.csv', sep=',', encoding='utf-8')
+
+    #print(df_segment_items.head(5))
+    return df_segment_items
+
+# get separate items each which has start time, end time, type and one or more alternative.content (actual word transcribed), alternative.confidence (0 to 1) =>just get first alternative
+def get_df_items():
+    item_list = []
+    data = load_json()
+
+    for item in data['results']['items']:
+        try:
+            result_item = {
+                'start_time': item['start_time'], 
+                'end_time': item['end_time'], 
+                'content': item['alternatives'][0]['content'] 
+            }
+            item_list.append(result_item)
+        except:
+            pass
     
-    #print(df_items.head(5))
+    df_items = pd.DataFrame(item_list)
+
+    df_items.to_csv('df_items.csv', sep=',', encoding='utf-8')
+
+    print(df_items.head(5))
     return df_items
 
 # create Plotly timeline chart
@@ -88,7 +129,7 @@ def chart_timeline():
             "plot_bgcolor": "#fff",
             "paper_bgcolor": "#fff",
             "title": {
-                "text": "Presidential Debate #1 Speaker Segments - Using Amazon Transcribe",
+                "text": "Presidential Debate #1 Speaker Segments From CSPAN Video - created by 009co.com",
                 "y": 0.9,
                 "x": 0.5,
                 "xanchor": "center",
