@@ -28,6 +28,8 @@ The transcription process outputs a JSON file into the S3 bucket. The JSON file 
 * Speaker segments - one or more time based segments by speaker. 
 * Items - one or more time based "items" one for each word.
 
+A sample IAM policy that includes both S3 and Transcribe actions is included here.
+
 ## Processing debate output JSON
 
 Python used to load JSON file into Pandas dataframe that was used as data source for a <a href="https://plotly.com/python/gantt/">Plotly timeline chart</a>.
