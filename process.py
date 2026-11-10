@@ -129,7 +129,7 @@ def chart_timeline():
             "plot_bgcolor": "#fff",
             "paper_bgcolor": "#fff",
             "title": {
-                "text": "Presidential Debate #1 Speaker Segments From CSPAN Video - created by 009co.com",
+                "text": "Presidential Debate #1 Speaker Segments From CSPAN Video - created by curtispokrant.com",
                 "y": 0.9,
                 "x": 0.5,
                 "xanchor": "center",

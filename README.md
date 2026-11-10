@@ -2,7 +2,7 @@
 
 <a href="https://aws.amazon.com/transcribe/">Amazon Transcribe</a> was used to create a transcription of the 2020 Presidential Debate #1 audio.
 
-<a href="https://009co.com/?p=1328">Read blog post</a> for more information.
+<a href="https://curtispokrant.com/posts/using-amazon-transcribe-to-get-2020-presidential-debate-1-speaker-segments/">Read blog post</a> for more information.
 
 ![2020_debate_1_timeline](2020_debate_1_timeline.png)
 
